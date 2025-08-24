@@ -824,33 +824,50 @@ function MainApp() {
   };
 
   return (
-    <div
-      dir="rtl"
-      className="min-h-screen w-full bg-background text-foreground"
-    >
+    <div dir="rtl" className="min-h-screen w-full bg-background text-foreground">
       <SidebarProvider defaultOpen={true}>
-        <div className="flex h-full w-full">
-          <SidebarInset>
-            <AppSidebar currentView={currentView} onViewChange={handleViewChange} />
-          </SidebarInset>
-          <main className="flex-1">
-            <header>
-              <Breadcrumb>
-                <BreadcrumbList>
-                  <BreadcrumbItem>
-                    <BreadcrumbLink>الرئيسية</BreadcrumbLink>
-                  </BreadcrumbItem>
-                </BreadcrumbList>
-              </Breadcrumb>
+        <div className="flex h-screen w-full">
+          {/* الشريط الجانبي */}
+          <AppSidebar currentView={currentView} onViewChange={handleViewChange} />
+          
+          {/* المحتوى الرئيسي */}
+          <div className="flex-1 flex flex-col overflow-hidden">
+            {/* الرأس */}
+            <header className="bg-card border-b border-border h-16 flex items-center justify-between px-6">
+              <div className="flex items-center gap-4">
+                <SidebarTrigger className="lg:hidden" />
+                <Breadcrumb>
+                  <BreadcrumbList>
+                    <BreadcrumbItem>
+                      <BreadcrumbLink href="#">الرئيسية</BreadcrumbLink>
+                    </BreadcrumbItem>
+                    <BreadcrumbSeparator />
+                    <BreadcrumbItem>
+                      <BreadcrumbPage>{getViewTitle(currentView)}</BreadcrumbPage>
+                    </BreadcrumbItem>
+                  </BreadcrumbList>
+                </Breadcrumb>
+              </div>
+              
+              <div className="flex items-center gap-4">
+                {getAiStatusBadge()}
+                {getBackendStatusBadge()}
+                {/* إضافة عناصر أخرى للرأس هنا */}
+              </div>
             </header>
-            <section>{renderCurrentView()}</section>
-          </main>
+            
+            {/* منطقة المحتوى */}
+            <main className="flex-1 overflow-auto p-6">
+              {renderCurrentView()}
+            </main>
+          </div>
         </div>
       </SidebarProvider>
       <Toaster />
     </div>
   );
 }
+
 
 export default function App() {
   return (
