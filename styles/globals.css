@@ -94,7 +94,7 @@ body {
   transition: all 0.3s ease;
 }
 
-/* ====== هيكل التطبيق الرئيسي ====== */
+/* ====== هيكل التطبيق الرئيسي المعدل ====== */
 .app-container {
   display: flex;
   flex-direction: column;
@@ -102,20 +102,48 @@ body {
   width: 100%;
 }
 
-.main-content {
+.main-layout {
   display: flex;
   flex: 1;
   width: 100%;
   margin-top: var(--header-height);
 }
 
+/* الشريط الجانبي المعدل */
+.sidebar {
+  width: var(--sidebar-width);
+  background: var(--sidebar);
+  color: var(--sidebar-foreground);
+  border-left: 1px solid var(--sidebar-border);
+  height: calc(100vh - var(--header-height));
+  position: fixed;
+  top: var(--header-height);
+  right: 0;
+  overflow-y: auto;
+  transition: all 0.3s ease;
+  z-index: 800;
+}
+
+[dir="rtl"] .sidebar {
+  right: auto;
+  left: 0;
+  border-left: none;
+  border-right: 1px solid var(--sidebar-border);
+}
+
+/* المحتوى الرئيسي المعدل */
 .content-area {
   flex: 1;
-  width: 100%;
+  width: calc(100% - var(--sidebar-width));
+  margin-right: var(--sidebar-width);
   padding: 2rem;
-  margin: 0 auto;
-  max-width: 1400px;
   transition: all 0.3s ease;
+  min-height: calc(100vh - var(--header-height));
+}
+
+[dir="rtl"] .content-area {
+  margin-right: 0;
+  margin-left: var(--sidebar-width);
 }
 
 /* ====== الرأس ====== */
@@ -133,30 +161,6 @@ body {
   padding: 0 2rem;
   z-index: 1000;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-/* ====== الشريط الجانبي ====== */
-.sidebar {
-  position: fixed;
-  top: var(--header-height);
-  right: 0;
-  bottom: 0;
-  width: var(--sidebar-width);
-  background: var(--sidebar);
-  color: var(--sidebar-foreground);
-  border-left: 1px solid var(--sidebar-border);
-  transform: translateX(100%);
-  transition: transform 0.3s ease;
-  z-index: 900;
-  overflow-y: auto;
-}
-
-.sidebar.open {
-  transform: translateX(0);
-}
-
-.sidebar-content {
-  padding: 1.5rem;
 }
 
 /* ====== تنسيقات النص العامة ====== */
@@ -316,22 +320,6 @@ p {
 }
 
 /* ====== إصلاحات RTL ====== */
-[dir="rtl"] .sidebar {
-  right: auto;
-  left: 0;
-  border-left: none;
-  border-right: 1px solid var(--sidebar-border);
-  transform: translateX(-100%);
-}
-
-[dir="rtl"] .sidebar.open {
-  transform: translateX(0);
-}
-
-[dir="rtl"] .sidebar-content {
-  margin-right: 0;
-}
-
 [dir="rtl"] .flex-row {
   flex-direction: row-reverse;
 }
@@ -366,6 +354,15 @@ p {
     width: 240px;
   }
   
+  .content-area {
+    width: 100%;
+    margin-right: 0;
+  }
+  
+  [dir="rtl"] .content-area {
+    margin-left: 0;
+  }
+  
   .grid-cols-4 {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -382,11 +379,12 @@ p {
   
   .sidebar {
     width: 100%;
-    transform: translateX(-100%);
+    transform: translateX(100%);
+    z-index: 1000;
   }
   
   [dir="rtl"] .sidebar {
-    transform: translateX(100%);
+    transform: translateX(-100%);
   }
   
   .sidebar.open {
@@ -507,7 +505,7 @@ p {
 
 /* ====== تحسينات خاصة للنظام ====== */
 /* تأكد من أن المحتوى لا يظهر تحت العناصر الثابتة */
-.main-content {
+.main-layout {
   min-height: calc(100vh - var(--header-height));
 }
 
@@ -602,4 +600,93 @@ img, svg {
     background: white;
     color: black;
   }
+}
+
+/* ====== تنسيقات إضافية للشريط الجانبي ====== */
+.sidebar-content {
+  padding: 1.5rem;
+}
+
+.sidebar-header {
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--sidebar-border);
+  margin-bottom: 1rem;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius);
+  transition: all 0.2s ease;
+  cursor: pointer;
+  color: var(--sidebar-foreground);
+  text-decoration: none;
+  gap: 0.75rem;
+}
+
+.sidebar-item:hover {
+  background-color: color-mix(in srgb, var(--primary) 10%, transparent);
+  color: var(--primary);
+}
+
+.sidebar-item.active {
+  background-color: var(--primary);
+  color: white;
+}
+
+.sidebar-footer {
+  padding: 1.5rem;
+  border-top: 1px solid var(--sidebar-border);
+  margin-top: auto;
+}
+
+/* زر toggle الشريط الجانبي للجوال */
+.sidebar-toggle {
+  display: none;
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  z-index: 1100;
+  background: var(--primary);
+  color: white;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+[dir="rtl"] .sidebar-toggle {
+  right: auto;
+  left: 1rem;
+}
+
+@media (max-width: 768px) {
+  .sidebar-toggle {
+    display: flex;
+  }
+}
+
+/* طبقة التعتيم للخلفية عند فتح الشريط الجانبي على الجوال */
+.sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 900;
+  display: none;
+}
+
+.sidebar-overlay.open {
+  display: block;
 }
